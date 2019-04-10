@@ -1,15 +1,14 @@
 package com.dev.rexhuang.eyes.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.dev.rexhuang.eyes.R;
 import com.dev.rexhuang.eyes.common.HttpApi;
 import com.dev.rexhuang.eyes.model.HomePicEntity;
@@ -29,26 +31,37 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-//    define field
+
+    //        define constant
     private static final String TAG = "MainActivity";
-    private boolean debug = false;
+    private final String videoType = "video";
     private static final int UPDATE_UI = 100001;
+
+    //    define field
+    private boolean debug = false;
+    private int videoListSize;
 
     //    define view
     private RecyclerView videoList;
+    private LinearLayoutManager linearLayoutManager;
+    private ItemClickSupport mItemClickSupport;
+    private ItemClickSupport.OnItemClickListener mOnItemClickListener;
+    private ItemClickSupport.OnItemLongClickListener mOnItemLongClickListener;
+
     //    define data
     private HomePicEntity homePicEntity;
-    private Handler handler = new Handler(){
+    private VideoListAdapter videoListAdapter;
+    private List<HomePicEntity.IssueListEntity.ItemListEntity> itemListEntities;
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case UPDATE_UI:
-                    videoList.setAdapter(new VideoListAdapter(MainActivity.this, homePicEntity.getIssueList().get(0).getItemList()));
+                    videoList.setAdapter(videoListAdapter);
                     break;
             }
         }
@@ -88,12 +101,14 @@ public class MainActivity extends AppCompatActivity {
                             while ((line = bufferedReader.readLine()) != null) {
                                 sb.append(line);
                             }
-                            Log.e(TAG,sb.toString());
+                            Log.e(TAG, sb.toString());
                             bufferedReader.close();
                             homePicEntity = new Gson().fromJson(sb.toString(), HomePicEntity.class);
-                            if (homePicEntity == null){
-                                Log.e(TAG,"homePicEntity is a null object");
+                            if (homePicEntity == null) {
+                                Log.e(TAG, "homePicEntity is a null object");
+                                return ;
                             }
+                            filterData();
                             handler.sendEmptyMessage(UPDATE_UI);
                             break;
                     }
@@ -106,8 +121,45 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setListener() {
+    private void filterData() {
+        itemListEntities = homePicEntity.getIssueList().get(0).getItemList();
+        videoListSize = itemListEntities.size();
+        for (int i = 0 ; i < videoListSize ; i ++){
+            if (!itemListEntities.get(i).getType().equals(videoType)){
+                itemListEntities.remove(i);
+                i--;
+                videoListSize--;
+            }
+        }
+        videoListAdapter = new VideoListAdapter(MainActivity.this, itemListEntities);
+    }
 
+    private void setListener() {
+        setListItemOnclick();
+    }
+
+    private void setListItemOnclick() {
+        mOnItemClickListener = new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                Intent intent = new Intent(MainActivity.this,VideoDetailActivity.class);
+                HomePicEntity.IssueListEntity.ItemListEntity.DataEntity dataEntity =
+                        itemListEntities.get(position).getData();
+                intent.putExtra("playUrl",dataEntity.getPlayUrl());
+                intent.putExtra("title",dataEntity.getTitle());
+                intent.putExtra("image",dataEntity.getCover().getFeed());
+                startActivity(intent);
+//                Toast.makeText(MainActivity.this," position : " + position,Toast.LENGTH_SHORT).show();
+            }
+        };
+        mOnItemLongClickListener = new ItemClickSupport.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+                return false;
+            }
+        };
+        mItemClickSupport.setmOnItemClickListener(mOnItemClickListener);
+        mItemClickSupport.setmOnItemLongClickListener(mOnItemLongClickListener);
     }
 
     private void initView() {
@@ -116,31 +168,29 @@ public class MainActivity extends AppCompatActivity {
 
     private void initList() {
         videoList = findViewById(R.id.videoList);
-        videoList.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        videoList.setLayoutManager(linearLayoutManager);
+        mItemClickSupport = ItemClickSupport.addTo(videoList);
     }
 
     public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.VideoListViewHolder> {
         //        define field
         private Context context;
-        private int length = 3;
+        private int size;
         //        define data
-        private List<String> titles = new ArrayList<String>();
-        private List<Bitmap> images = new ArrayList<Bitmap>();
-        private List<String> times = new ArrayList<String>();
         private List<HomePicEntity.IssueListEntity.ItemListEntity> itemListEntities;
 
         public VideoListAdapter(Context context, List<HomePicEntity.IssueListEntity.ItemListEntity> itemListEntities) {
             this.context = context;
             this.itemListEntities = itemListEntities;
-//            initData();
+            this.size = itemListEntities.size();
+            initData();
         }
 
+
         private void initData() {
-            for (int i = 0; i < length; i++) {
-                titles.add("无所谓");
-                images.add(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_background));
-                times.add("动画  / " + i + "'" + Math.random());
-            }
+
         }
 
         @NonNull
@@ -153,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull VideoListViewHolder videoListViewHolder, int i) {
-            Log.e(TAG,"i : " + i);
+            Log.e(TAG, "i : " + i);
             HomePicEntity.IssueListEntity.ItemListEntity itemListEntity = itemListEntities.get(i);
             String feed;
             if (itemListEntity.getType().equals("video")) {
@@ -161,7 +211,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 feed = itemListEntity.getData().getImage();
             }
+            String userIcon= itemListEntity.getData().getAuthor().getIcon();
             String title = itemListEntity.getData().getTitle();
+            String slogan = itemListEntity.getData().getSlogan();
             String category = itemListEntity.getData().getCategory();
             category = "#" + category + "  /  ";
             int duration = itemListEntity.getData().getDuration();
@@ -180,7 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 durationString = "" + minit;
             }
             String stringTime = durationString + "' " + stringLast + '"';
-            Glide.with(context).load(feed).into(videoListViewHolder.imageView);
+            Glide.with(context).load(feed).apply(RequestOptions.bitmapTransform(new RoundedCorners(1000))).into(videoListViewHolder.imageView);
+            Glide.with(context).load(userIcon).into(videoListViewHolder.imageView_User);
+            videoListViewHolder.tvSlogan.setText(slogan);
             videoListViewHolder.tvTitle.setText(title);
             videoListViewHolder.tvTime.setText(String.valueOf(category + stringTime));
 
@@ -188,20 +242,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return itemListEntities.size();
+            return size;
         }
 
         public class VideoListViewHolder extends RecyclerView.ViewHolder {
             //            define view
+            ImageView imageView_User;
             ImageView imageView;
             TextView tvTitle;
             TextView tvTime;
+            TextView tvSlogan;
 
             public VideoListViewHolder(@NonNull View itemView) {
                 super(itemView);
                 imageView = itemView.findViewById(R.id.iv);
                 tvTitle = itemView.findViewById(R.id.tv_title);
                 tvTime = itemView.findViewById(R.id.tv_time);
+                imageView_User = itemView.findViewById(R.id.iv_user);
+                tvSlogan = itemView.findViewById(R.id.tv_slogan);
             }
         }
     }

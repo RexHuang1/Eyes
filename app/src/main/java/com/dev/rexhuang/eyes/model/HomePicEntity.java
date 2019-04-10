@@ -26,7 +26,7 @@ public class HomePicEntity {
         this.issueList = issueList;
     }
 
-    public static class IssueListEntity{
+    public static class IssueListEntity {
         private long date;
         private long publishTime;
         private String type;
@@ -73,10 +73,11 @@ public class HomePicEntity {
             this.itemList = itemList;
         }
 
-        public static class ItemListEntity{
+        public static class ItemListEntity {
             private String type;
             private DataEntity data;
             private String image;
+
 
             public String getType() {
                 return type;
@@ -102,7 +103,7 @@ public class HomePicEntity {
                 this.image = image;
             }
 
-            public static class DataEntity{
+            public static class DataEntity {
                 private int id;
                 private long date;
                 private int idx;
@@ -114,10 +115,11 @@ public class HomePicEntity {
                 private String playUrl;
                 private String text;
                 private ConsumptionEntity consumption;
+                private String slogan;
                 private Object promotion;
                 private Object waterMarks;
                 private ProviderEntity provider;
-                private Object author;
+                private AuthorEntity author;
                 private Object adTrack;
                 private Object sharedAdTrack;
                 private Object favoritedAdTrack;
@@ -217,6 +219,14 @@ public class HomePicEntity {
                     this.consumption = consumption;
                 }
 
+                public String getSlogan() {
+                    return slogan;
+                }
+
+                public void setSlogan(String slogan) {
+                    this.slogan = slogan;
+                }
+
                 public Object getPromotion() {
                     return promotion;
                 }
@@ -241,11 +251,11 @@ public class HomePicEntity {
                     this.provider = provider;
                 }
 
-                public Object getAuthor() {
+                public AuthorEntity getAuthor() {
                     return author;
                 }
 
-                public void setAuthor(Object author) {
+                public void setAuthor(AuthorEntity author) {
                     this.author = author;
                 }
 
@@ -352,7 +362,7 @@ public class HomePicEntity {
                     }
                 }
 
-                public static class ProviderEntity{
+                public static class ProviderEntity {
                     private String name;
                     private String alias;
                     private String icon;
@@ -382,7 +392,7 @@ public class HomePicEntity {
                     }
                 }
 
-                public static class CoverEntity{
+                public static class CoverEntity {
                     private String feed;
                     private String detail;
                     private String blurred;
@@ -421,7 +431,7 @@ public class HomePicEntity {
                     }
                 }
 
-                public static class WebUrlEntity{
+                public static class WebUrlEntity {
                     private String raw;
                     private String forWeibo;
 
@@ -442,7 +452,7 @@ public class HomePicEntity {
                     }
                 }
 
-                public static class PlayInfoEntity{
+                public static class PlayInfoEntity {
                     private int heignht;
                     private int width;
                     private String name;
@@ -488,6 +498,47 @@ public class HomePicEntity {
                     public void setUrl(String url) {
                         this.url = url;
                     }
+                }
+
+                public static class AuthorEntity {
+                    private int id;
+                    private String icon;
+                    private String name;
+                    private String description;
+
+                    public int getId() {
+                        return id;
+                    }
+
+                    public void setId(int id) {
+                        this.id = id;
+                    }
+
+                    public String getIcon() {
+                        return icon;
+                    }
+
+                    public void setIcon(String icon) {
+                        this.icon = icon;
+                    }
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    public void setName(String name) {
+                        this.name = name;
+                    }
+
+                    public String getDescription() {
+                        return description;
+                    }
+
+                    public void setDescription(String description) {
+                        this.description = description;
+                    }
+
+
                 }
             }
         }

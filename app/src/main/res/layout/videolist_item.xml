@@ -1,48 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="250dp">
+    android:layout_height="wrap_content"
+    android:paddingLeft="5dp"
+    android:paddingTop="5dp">
 
-    <ImageView
-        android:id="@+id/iv"
+    <FrameLayout
+        android:id="@+id/iv_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp">
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:id="@+id/rl_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:gravity="center"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="动画  / 16'29"
+                android:textColor="@color/colorWhite"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
 
     <LinearLayout
         android:id="@+id/ll_moban"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/boman_selector"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_frame"
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rl_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_user"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/iv_user"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="测试"
-                android:textColor="@color/colorWhite"
-                android:textSize="20sp" />
+                android:textColor="@color/colorBalck"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="match_parent"
+                android:id="@+id/tv_slogan"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_title"
+                android:layout_alignLeft="@id/tv_title"
                 android:layout_marginTop="2dp"
+                android:ellipsize="end"
                 android:gravity="center"
-                android:text="动画  / 16'29"
-                android:textColor="@color/colorWhite" />
+                android:maxLines="1"
+                android:text="测试"
+                android:textSize="13sp" />
+
+
         </RelativeLayout>
+
 
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>
