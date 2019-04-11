@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="5dp"
     android:paddingTop="5dp">
 
     <FrameLayout
         android:id="@+id/iv_frame"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
         android:paddingTop="5dp">
 
         <ImageView
             android:id="@+id/iv"
-            android:layout_width="400dp"
+            android:layout_width="320dp"
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
 
@@ -39,13 +37,13 @@
 
     </FrameLayout>
 
-
     <LinearLayout
         android:id="@+id/ll_moban"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_frame"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -64,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/iv_user"
                 android:ellipsize="end"
                 android:gravity="center"
@@ -80,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_title"
                 android:layout_alignLeft="@id/tv_title"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
