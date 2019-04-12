@@ -19,6 +19,8 @@ import android.view.View;
 import com.dev.rexhuang.eyes.R;
 import com.dev.rexhuang.eyes.common.HttpApi;
 import com.dev.rexhuang.eyes.model.HomePicEntity;
+import com.dev.rexhuang.eyes.view.recyclerview.DelegationAdapter;
+import com.dev.rexhuang.eyes.view.recyclerview.HistoryAdapterDelegate;
 import com.dev.rexhuang.eyes.view.recyclerview.VerticalSpace;
 import com.dev.rexhuang.eyes.view.recyclerview.VideoListAdapter;
 import com.google.gson.Gson;
@@ -48,10 +50,10 @@ public class HistoryActivity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case INIT_UI:
-                    videoList.setAdapter(videoListAdapter);
+                    videoList.setAdapter(delegationAdapter);
                     break;
                 case UPDATE_UI:
-                    videoListAdapter.notifyDataSetChanged();
+                    delegationAdapter.notifyDataSetChanged();
                     isLoading = false;
                     break;
             }
@@ -70,6 +72,7 @@ public class HistoryActivity extends AppCompatActivity {
     private ItemClickSupport mItemClickSupport;
     private ItemClickSupport.OnItemClickListener mOnItemClickListener;
     private ItemClickSupport.OnItemLongClickListener mOnItemLongClickListener;
+    private DelegationAdapter delegationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,9 +153,10 @@ public class HistoryActivity extends AppCompatActivity {
         }
         nextUrl = homePicEntity.getNextPageUrl();
         Log.e(TAG, "nextUrl ： " + nextUrl);
-        videoListAdapter = new VideoListAdapter(HistoryActivity.this, itemListEntities);
-        videoListAdapter.setHeaderView(HistoryActivity.this, R.layout.video_header);
-        videoListAdapter.setFooterView(HistoryActivity.this, R.layout.video_header);
+//        videoListAdapter = new VideoListAdapter(HistoryActivity.this, itemListEntities);
+//        videoListAdapter.setHeaderView(HistoryActivity.this, R.layout.video_header);
+//        videoListAdapter.setFooterView(HistoryActivity.this, R.layout.video_header);
+        delegationAdapter.setDataItems(itemListEntities);
     }
 
     private void setListener() {
@@ -164,18 +168,19 @@ public class HistoryActivity extends AppCompatActivity {
         mOnItemClickListener = new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                VideoListAdapter videoListAdapter = (VideoListAdapter) recyclerView.getAdapter();
-                if (videoListAdapter.getmHeaderView() != null) {
-                    Intent intent = new Intent(HistoryActivity.this, VideoDetailActivity.class);
-                    int realPosition = videoListAdapter.getRealPosition(recyclerView.findViewHolderForAdapterPosition(position));
-                    HomePicEntity.IssueListEntity.ItemListEntity.DataEntity dataEntity =
-                            itemListEntities.get(realPosition).getData();
-                    intent.putExtra("playUrl", dataEntity.getPlayUrl());
-                    intent.putExtra("title", dataEntity.getTitle());
-                    intent.putExtra("image", dataEntity.getCover().getFeed());
-                    startActivity(intent);
+                int realPosition = position;
+                DelegationAdapter videoListAdapter = (DelegationAdapter) recyclerView.getAdapter();
+                if (videoListAdapter.getHeaderCount() != 0 ) {
+                    realPosition -= videoListAdapter.getHeaderCount();
 //                Toast.makeText(MainActivity.this," position : " + position,Toast.LENGTH_SHORT).show();
                 }
+                Intent intent = new Intent(HistoryActivity.this, VideoDetailActivity.class);
+                HomePicEntity.IssueListEntity.ItemListEntity.DataEntity dataEntity =
+                        itemListEntities.get(realPosition).getData();
+                intent.putExtra("playUrl", dataEntity.getPlayUrl());
+                intent.putExtra("title", dataEntity.getTitle());
+                intent.putExtra("image", dataEntity.getCover().getFeed());
+                startActivity(intent);
             }
         };
         mOnItemLongClickListener = new ItemClickSupport.OnItemLongClickListener() {
@@ -266,6 +271,8 @@ public class HistoryActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(HistoryActivity.this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         videoList.setLayoutManager(linearLayoutManager);
+        delegationAdapter = new DelegationAdapter();
+        delegationAdapter.addDelegate(new HistoryAdapterDelegate());
         mItemClickSupport = ItemClickSupport.addTo(videoList);
         videoList.addItemDecoration(new VerticalSpace((int) getResources().getDimension(R.dimen.video_margin)));
     }
