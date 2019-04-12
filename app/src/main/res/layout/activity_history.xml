@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.MainActivity">
+    tools:context=".view.HistoryActivity"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_title"
@@ -14,35 +14,15 @@
         android:paddingLeft="10dp">
 
         <TextView
-            android:id="@+id/text_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FRIDAY,APRIL 12"
-            android:textStyle="bold"
-            android:textSize="15sp" />
-
-        <TextView
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_date"
-            android:text="开眼编辑精选"
+            android:text="开眼精选"
             android:textColor="@color/colorBalck"
             android:textSize="25sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/text_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/text_title"
-            android:layout_alignParentRight="true"
-            android:text="查看往期  >  "
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
-            android:textSize="15sp" />
     </RelativeLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/videoList"
