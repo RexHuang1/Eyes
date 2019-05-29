@@ -42,7 +42,7 @@ public abstract class AbsDelegationAdapter<VH extends RecyclerView.ViewHolder> e
     @NonNull
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return mDelegatesManager.onCreateViewHolder(parent,viewType);
+        return mDelegatesManager.onCreateViewHolder(parent, viewType);
     }
 
     @Override
@@ -52,13 +52,13 @@ public abstract class AbsDelegationAdapter<VH extends RecyclerView.ViewHolder> e
 
     @Override
     public void onBindViewHolder(@NonNull VH holder, int position, @NonNull List<Object> payloads) {
-        onBindViewHolder(holder,position);
-        mDelegatesManager.onBindViewHolder(holder,position,payloads,getItem(position));
+        onBindViewHolder(holder, position);
+        mDelegatesManager.onBindViewHolder(holder, position, payloads, getItem(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-        return mDelegatesManager.getItemViewType(getItem(position),position);
+        return mDelegatesManager.getItemViewType(getItem(position), position);
     }
 
     @Override

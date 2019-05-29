@@ -2,7 +2,9 @@ package com.dev.rexhuang.eyes.view;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ public class VideoDetailActivity extends AppCompatActivity {
     //    define view
     private StandardGSYVideoPlayer videoPlayer;
     OrientationUtils orientationUtils;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +42,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 
     private void initVideoPlay() {
         videoPlayer = findViewById(R.id.video_player);
-        videoPlayer.setUp(playUrl,true,title);
+        videoPlayer.setUp(playUrl, true, title);
         //增加封面
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

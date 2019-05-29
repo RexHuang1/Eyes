@@ -1,7 +1,6 @@
 package com.dev.rexhuang.eyes.view.recyclerview;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.dev.rexhuang.eyes.R;
 import com.dev.rexhuang.eyes.model.HomePicEntity;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,18 +22,27 @@ import androidx.recyclerview.widget.RecyclerView;
  * *  created by RexHuang
  * *  on 2019/4/12
  */
-public class HistoryAdapterDelegate extends AdapterDelegate<HomePicEntity.IssueListEntity.ItemListEntity,HistoryAdapterDelegate.ViewHolder> {
+public class HistoryAdapterDelegate extends AdapterDelegate<HomePicEntity.IssueListEntity.ItemListEntity, HistoryAdapterDelegate.ViewHolder> {
+
+    private static final  int VIDEO = -2;
+    private static final int TEXT = -1;
+    public int getRealViewType(HomePicEntity.IssueListEntity.ItemListEntity itemListEntity){
+        if (itemListEntity.getType().equals("video")){
+            return VIDEO;
+        }
+        return TEXT;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.videolist_history_item,parent,false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.videolist_history_item, parent, false);
         ViewHolder holder = new ViewHolder(itemView);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position,HomePicEntity.IssueListEntity.ItemListEntity itemListEntities) {
-        ViewHolder videoListViewHolder =  holder;
+    public void onBindViewHolder(ViewHolder holder, int position, HomePicEntity.IssueListEntity.ItemListEntity itemListEntities) {
+        ViewHolder videoListViewHolder = holder;
 //        Log.e(TAG, "realPosition : " + realPosition);
         HomePicEntity.IssueListEntity.ItemListEntity itemListEntity = itemListEntities;//.get(position);
         String feed;
@@ -78,7 +84,7 @@ public class HistoryAdapterDelegate extends AdapterDelegate<HomePicEntity.IssueL
         videoListViewHolder.tvTime.setText(String.valueOf(category + stringTime));
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView_User;
         ImageView imageView;

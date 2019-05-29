@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean debug = false;
     private int videoListSize;
     private String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    private String[] weekdays = { "Sunday","MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "Friday", "Saturday"};
+    private String[] weekdays = {"Sunday", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "Friday", "Saturday"};
 
     //    define view
     private RecyclerView videoList;
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         rl_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,HistoryActivity.class);
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
                 startActivity(intent);
             }
         });

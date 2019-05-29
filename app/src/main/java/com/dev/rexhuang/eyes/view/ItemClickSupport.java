@@ -1,6 +1,7 @@
 package com.dev.rexhuang.eyes.view;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 
 import com.dev.rexhuang.eyes.R;

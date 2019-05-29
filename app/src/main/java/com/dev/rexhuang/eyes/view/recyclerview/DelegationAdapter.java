@@ -1,6 +1,10 @@
 package com.dev.rexhuang.eyes.view.recyclerview;
 
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+
+import com.dev.rexhuang.eyes.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +16,29 @@ import androidx.recyclerview.widget.RecyclerView;
  * *  created by RexHuang
  * *  on 2019/4/12
  */
-public class DelegationAdapter<VH extends RecyclerView.ViewHolder> extends AbsDelegationAdapter<VH> {
+public class DelegationAdapter<VH extends RecyclerView.ViewHolder> extends AbsDelegationAdapter<VH> implements View.OnClickListener, View.OnLongClickListener {
+
+    private boolean haveLoading = false;
+    private OnItemClickListener onItemClickListener;
+    private int TYPE_LOADING = -1;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setHaveLoading(boolean haveLoading) {
+        this.haveLoading = haveLoading;
+    }
+
+    public boolean isHaveLoading() {
+        return haveLoading;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+
+        void onItemLongClick(View itemView, int position);
+    }
 
     private List<Object> mDataItems = new ArrayList<>();
     private List<Object> mHeaderItems = new ArrayList<>();
@@ -158,6 +184,9 @@ public class DelegationAdapter<VH extends RecyclerView.ViewHolder> extends AbsDe
 
     @Override
     public int getItemCount() {
+        if (isHaveLoading()){
+            return getHeaderCount() + getDataCount() + getFooterCount() + 1;
+        }
         return getHeaderCount() + getDataCount() + getFooterCount();
     }
 
@@ -190,4 +219,65 @@ public class DelegationAdapter<VH extends RecyclerView.ViewHolder> extends AbsDe
         clearHeader();
         clearFooter();
     }
+
+    @Override
+    public void onBindViewHolder(@NonNull VH holder, int position) {
+        if (haveLoading && position == getItemCount() - 1 ){
+
+        }
+        holder.itemView.setTag(R.id.tag_clickable_adapter_delegate_holder, holder);
+        holder.itemView.setOnClickListener(this);
+        holder.itemView.setOnLongClickListener(this);
+        super.onBindViewHolder(holder, position);
+    }
+
+    @Override
+    public void onClick(View v) {
+        VH holder = (VH) v.getTag(R.id.tag_clickable_adapter_delegate_holder);
+        if (holder != null) {
+            int position = holder.getAdapterPosition();
+            if (holder != null)
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(v,position);
+                }
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        return false;
+    }
+
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (position == getItemCount() - 1 && isHaveLoading() == true){
+//            return TYPE_LOADING;
+//        }
+//        return super.getItemViewType(position);
+//    }
+//
+//    @NonNull
+//    @Override
+//    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        if (viewType == TYPE_LOADING){
+//            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_loading,parent,false);
+//            return (VH) new LoadingViewHolder(itemView);
+//        }
+//        return super.onCreateViewHolder(parent, viewType);
+//    }
+//
+//    public void startLoading(){
+//
+//    }
+//
+//    public void shutdownLoading(){
+//
+//    }
+//
+//    private class LoadingViewHolder extends RecyclerView.ViewHolder {
+//
+//        public LoadingViewHolder(@NonNull View itemView) {
+//            super(itemView);
+//        }
+//    }
 }
