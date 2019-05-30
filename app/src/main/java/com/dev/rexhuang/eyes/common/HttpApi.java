@@ -1,5 +1,7 @@
 package com.dev.rexhuang.eyes.common;
 
+import java.util.HashMap;
+
 /**
  * *  created by RexHuang
  * *  on 2019/4/9
@@ -11,4 +13,5 @@ public class HttpApi {
     public static final String USER_SIGN = "https://api2.bmob.cn/1/users";
     //用户登录
     public static final String USER_LOGIN = "https://api2.bmob.cn/1/login";
+
 }
