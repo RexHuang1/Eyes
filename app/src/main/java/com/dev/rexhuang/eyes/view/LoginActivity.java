@@ -180,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
-    private class MyHandler extends Handler{
+    private static class MyHandler extends Handler{
         WeakReference<LoginActivity> weakReference;
         MyHandler(LoginActivity activity){
             weakReference = new WeakReference<>(activity);
@@ -188,26 +188,32 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            LoginActivity activity = weakReference.get();
-            if (activity != null){
+            LoginActivity loginActivity = weakReference.get();
+            if (loginActivity != null){
                 switch (msg.what){
                     case SHOW_MESSAGE:
                         if (msg.arg1 == 1) {
-                            Toast.makeText(MainApplication.getAppContext(), signResponseMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainApplication.getAppContext(), loginActivity.signResponseMessage, Toast.LENGTH_SHORT).show();
                         } else if (msg.arg1 == 2){
-                            Toast.makeText(MainApplication.getAppContext(), loginResponseMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainApplication.getAppContext(),loginActivity.loginResponseMessage , Toast.LENGTH_SHORT).show();
                             if (msg.arg2 == 2) {
                                 MyHandler.this.sendEmptyMessage(FINISH_SELF);
                             }
                         }
                         break;
                     case FINISH_SELF:
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        LoginActivity.this.finish();
+                        Intent intent = new Intent(loginActivity, MainActivity.class);
+                        loginActivity.startActivity(intent);
+                        loginActivity.finish();
                         break;
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
     }
 }
